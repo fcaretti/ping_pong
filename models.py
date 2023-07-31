@@ -13,10 +13,11 @@ def sigmoid(x):
 
 def pyro_model(winner_id, loser_id, loser_score_obs=None):
     # priors
-    mu = pyro.sample("mu", dist.Normal(0.0, 1.0))
-    sd = pyro.sample("sd", dist.LogNormal(0.0, 1.0))
-
-    nt = len(np.unique(winner_id))
+    #mu = pyro.sample("mu", dist.Normal(0.0, 1.0))
+    #sd = pyro.sample("sd", dist.LogNormal(0.0, 1.0))
+    mu=0.5
+    sd=1.
+    nt = len(torch.unique(torch.cat((winner_id,loser_id))))
 
     with pyro.plate("plate_players", nt):
         strength = pyro.sample("strength", dist.Normal(mu, sd))
