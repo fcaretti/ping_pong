@@ -1,0 +1,16 @@
+name: Actions on fcaretti
+on: [push]
+jobs:
+  test-docker-image:
+    runs-on: ubuntu-latest
+    container: 
+      image: fcaretti/ping_pong:latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Run tests in tests/fcaretti directory
+      run: |
+        cd tests
+        python3 import_test.py
