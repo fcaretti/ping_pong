@@ -13,4 +13,4 @@ jobs:
     - name: Run tests in tests/fcaretti directory
       run: |
         cd tests
-        python3 import_test.py
+        python3 models_test.py
