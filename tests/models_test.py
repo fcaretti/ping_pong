@@ -46,3 +46,14 @@ mcmc_run.run(winner_ids, loser_ids, loser_scores)
 posterior_samples = mcmc_run.get_samples()
 
 print('Pyro model running')
+
+
+#just in case you run this model after the previous one
+if isinstance(winner_ids, torch.Tensor):
+    winner_ids=winner_ids.numpy()
+    loser_ids=loser_ids.numpy()
+    loser_scores=loser_scores.numpy()
+g=models.gibbs_model(winner_ids, loser_ids, loser_scores,names=names)
+g.posterior_sampling(n_iterations=5, warmup=1)
+print(' ')
+print('Gibbs model running')
