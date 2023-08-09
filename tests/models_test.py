@@ -19,12 +19,12 @@ print(torch.__version__)
 print(np.__version__)
 print('Passed import tests')
 
-url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTltw5xQVB_sSBCLiA5nzbiDc1srkInw5TDBWcYy50A-Yhr7zKMTgJUy0aoE1q0uCo5WUJSJSVhR_SY/pub?gid=0&single=true&output=csv"
+url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTltw5xQVB_sSBCLiA5nzbiDc1srkInw5TDBWcYy50A-Yhr7zKMTgJUy0aoE1q0uCo5WUJSJSVhR_SY/pub?gid=1190540286&single=true&output=csv"
 df = pd.read_csv(url)
-winners=np.array(df['Winner'])
-losers=df['Loser']
-loser_scores=df['Points']
-names = pd.concat([df['Winner'], df['Loser']]).unique()
+winners=np.array(df['Winner\'s name'])
+losers=np.array(df['Loser\'s name'])
+loser_scores=np.array(df['Loser\'s score'])
+names = pd.concat([df['Winner\'s name'], df['Loser\'s name']]).unique()
 ids = list(range(len(names)))
 dict_to_id = dict(zip(names,ids))
 dict_to_name=dict(zip(ids,names))
