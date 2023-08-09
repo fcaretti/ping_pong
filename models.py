@@ -31,7 +31,7 @@ def pyro_model(winner_id, loser_id, loser_score_obs=None):
 
 
 epsilon=1e-12
-def unnorm_product_function(l1,lambdas_wins, lambdas_losses, scores, std=0.2, epsilon=1e-12):
+def unnorm_product_function(l1,lambdas_wins, lambdas_losses, scores, std=0.3, epsilon=1e-12):
     if l1<0 or l1>1:
         return 0
     else:
@@ -169,6 +169,6 @@ class gibbs_model:
         for i in range(self.n_players):
             for j in range(self.n_players)[i+1:]:
                 if self.names is not None:
-                    print(f'{self.names[i]} has {self.predict_match(i,j)*100}% of probability of winning against {self.names[j]}')
+                    print(f'{self.names[i]} has {int(self.predict_match(i,j)*100)}% of probability of winning against {self.names[j]}')
                 else:
-                    print(f'Player {i+1} has {self.predict_match(i,j)*100}% of probability of winning against Player {j+1}')
+                    print(f'Player {i+1} has {int(self.predict_match(i,j)*100)}% of probability of winning against Player {j+1}')
