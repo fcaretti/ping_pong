@@ -103,7 +103,7 @@ def simulate_match(p):
         return 0
 
 class gibbs_model:
-    def __init__(self, winner_ids, loser_ids, loser_scores, prior_std=0.2,names=None):
+    def __init__(self, winner_ids, loser_ids, loser_scores, prior='gaussian', prior_std=0.2,names=None):
         #find the number of players
         self.n_players=len(np.unique(np.concatenate((winner_ids,loser_ids))))
         #initialize the strengths; you can also put a wider prior
@@ -114,13 +114,15 @@ class gibbs_model:
         self.prior_std=prior_std
         self.names=names
         self.posterior_samples=None
+        self.prior=prior
         
-    def posterior_sampling(self,n_iterations=100, warmup=20):
+    def posterior_sampling(self,n_iterations=100, warmup=20, verbose=True):
         strengths_time=[]
         ids = list(range(self.n_players))
         thermalized=False
         for i in range(n_iterations):
-            print("\r" + "Progress: [" + "#" * i + " " * (n_iterations - i) + f"] {int(100 * i / n_iterations)}%", end="")
+            if verbose:
+                print("\r" + "Progress: [" + "#" * i + " " * (n_iterations - i) + f"] {int(100 * i / n_iterations)}%", end="")
             if thermalized==False:
                 if i==warmup:
                     thermalized=True
