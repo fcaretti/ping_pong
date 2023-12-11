@@ -115,6 +115,7 @@ class gibbs_model:
         self.names=names
         self.posterior_samples=None
         self.prior=prior
+        self.probabilities=None
         
     def posterior_sampling(self,n_iterations=100, warmup=20, verbose=True):
         strengths_time=[]
@@ -167,10 +168,63 @@ class gibbs_model:
             print("Posterior mean of strength:", mean[i])
             print("Posterior std dev of strength:", std[i])
             print()
-            
-        for i in range(self.n_players):
-            for j in range(self.n_players)[i+1:]:
-                if self.names is not None:
-                    print(f'{self.names[i]} has {int(self.predict_match(i,j)*100)}% of probability of winning against {self.names[j]}')
-                else:
-                    print(f'Player {i+1} has {int(self.predict_match(i,j)*100)}% of probability of winning against Player {j+1}')
+        if self.probabilities is None:
+            self.probabilities=np.zeros([self.n_players,self.n_players])
+            for i in range(self.n_players):
+                for j in range(self.n_players)[i+1:]:
+                    prob=int(self.predict_match(i,j)*100)
+                    self.probabilities[i][j]=prob
+                    self.probabilities[j][i]=100-prob
+                    if self.names is not None:
+                        print(f'{self.names[i]} has {prob}% of probability of winning against {self.names[j]}')
+                    else:
+                        print(f'Player {i+1} has {prob}% of probability of winning against Player {j+1}')
+        else:
+            for i in range(self.n_players):
+                for j in range(self.n_players)[i+1:]:
+                    if self.names is not None:
+                        print(f'{self.names[i]} has {self.probabilities[i][j]}% of probability of winning against {self.names[j]}')
+                    else:
+                        print(f'Player {i+1} has {self.probabilities[i][j]}% of probability of winning against Player {j+1}')
+
+    def plot_strengths(self):
+        means=np.mean(self.posterior_samples,axis=0)
+        stds=np.std(self.posterior_samples,axis=0)
+        #plot the means and std in a barplot
+        fig, ax = plt.subplots()
+        plt.figsize=(40,40)
+        #plot with error bars
+        ax.errorbar(range(len(means)), means, yerr=stds, fmt='o', capsize=0);
+        #add names on the x axis
+        if self.names is not None:
+            ax.set_xticks(np.arange(len(self.names)))
+            ax.set_xticklabels(self.names)
+            plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+                    rotation_mode="anchor")
+        plt.show()
+
+    def plot_table(self):
+        if self.probabilities is None:
+            probabilities=np.zeros([self.n_players,self.n_players])
+
+            for i in range(self.n_players):
+                for j in range(self.n_players)[i+1:]:
+                    probabilities[i,j]=int(self.predict_match(i,j)*100)
+                    probabilities[j,i]=100-probabilities[i,j]
+            self.probabilities=probabilities
+        #plot probabilities as a table, like a confusion matrix
+        fig, ax = plt.subplots()
+        plt.figsize=(40,40)
+        im = ax.imshow(self.probabilities)
+        #put the players' names on the axes
+        if self.names is not None:
+            ax.set_xticks(np.arange(len(self.names)))
+            ax.set_yticks(np.arange(len(self.names)))
+            ax.set_xticklabels(self.names)
+            ax.set_yticklabels(self.names)
+            plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+                    rotation_mode="anchor")
+        #add color legend
+        cbar = ax.figure.colorbar(im, ax=ax)
+        cbar.ax.set_ylabel("Probability (%)", rotation=-90, va="bottom")
+        plt.show()
